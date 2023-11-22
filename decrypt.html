@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <script src="./js/crypto-js.js"></script>
+  <meta charset="UTF-8">
+  <title>Dekripto</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <h1 id="title">Dekripto foton tuaj këtu</h1>
+  <div class="zone">
+    <div id="dropZ">
+      <i class="fa fa-cloud-upload"></i>
+      <div></div>                    
+      <span></span>
+      <div class="selectFile">       
+        <label for="file">Ngarko këtu</label>                   
+        <input type="file" name="files[]" id="file" onchange="previewFile()">
+      </div>
+      <p>Limiti është: 10 MB</p>
+    </div>
+  </div>
+
+  <div class="zone-image">
+    <textarea id="content" class="result" rows="20" cols="50"></textarea>
+    <label>
+      <input type="text" id="secret" placeholder="Futni çelësin tuaj sekret">
+      <button onclick="decryptFromDES()">Dekripto</button>
+    </label>   
+  </div>
+
+  <script>
+    function previewFile() {
+        const content = document.querySelector('.result');
+        const [file] = document.querySelector('input[type=file]').files;
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+            content.innerText = reader.result;
+        }, false);
+
+        if (file) {
+            reader.readAsText(file);
+        }
+    }
+    function decryptFromDES() {
+        var secretKey = document.getElementById('secret').value;
+        if(secretKey != ''){
+          var fileName = "decrypted_image";
+          var encryptedText = document.getElementById('content').value;
+          try {
+              var decryptedText = CryptoJS.TripleDES.decrypt(encryptedText, secretKey).toString(CryptoJS.enc.Utf8);
+              var element = document.createElement('a');
+              element.setAttribute('href', decryptedText);
+              element.setAttribute('download', fileName);
+              element.style.display = 'none';
+              document.body.appendChild(element);
+              element.click();
+              document.body.removeChild(element);
+          }
+          catch(err) {
+              alert("Ka një gabim në dokumentin tuaj ose çelësi juaj sekret është i gabuar!!");
+          }
+        }
+        else {
+          alert("Ju lutem shkruani qelsin tuaj!")
+        }
+    }
+  </script>
+</body>
+</html>
